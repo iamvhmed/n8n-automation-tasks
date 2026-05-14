@@ -1,0 +1,153 @@
+{
+  "name": "googleSheet&Mail",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 49
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "80e2fab8-c4d5-4498-bd2d-e91149b78b87",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10FsEw2mj6SgAwJtHCYw38FWesbjQstoKQYFQYf79bA4",
+          "mode": "list",
+          "cachedResultName": "Daily Tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10FsEw2mj6SgAwJtHCYw38FWesbjQstoKQYFQYf79bA4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10FsEw2mj6SgAwJtHCYw38FWesbjQstoKQYFQYf79bA4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -128,
+        -32
+      ],
+      "id": "5df4f922-6e11-4a97-8b96-2fef61db4a32",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7RxI37Ea5AnAFOOU",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "a7med.aymanfarahat@gmail.com",
+        "subject": "Today's Tasks",
+        "emailType": "text",
+        "message": "=\n{{ $json.Tasks.map((task, i) => $json['#'][i] + \" - \" + task).join('\\n') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        -32
+      ],
+      "id": "655102fa-bc4a-46b5-a89c-c43c22b3ff4a",
+      "name": "Send a message",
+      "webhookId": "5d8dbaa0-00bf-40fc-b53d-65c5cef56833",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "nOQwOWu0L6c6VYga",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "Tasks"
+            },
+            {
+              "fieldToAggregate": "#"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "a837bebb-7f2f-46b3-9f3f-7d235a1e9bcf",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "da55f21c-c528-43e0-9099-8ae9d14c10ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f94826974acc55a23ef7775ad94e2037cf3cc86cbc4e26a8b4fa3ab9d1891d17"
+  },
+  "id": "BH3Y3zTzVBNRpHfO",
+  "tags": []
+}
